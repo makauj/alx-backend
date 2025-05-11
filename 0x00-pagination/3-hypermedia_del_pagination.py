@@ -48,7 +48,8 @@ class Server:
             page_size (int, optional): Defaults to 10.
 
         Returns:
-            Dict: A dictionary containing the page data, next index, and total number of pages.
+            Dict: A dictionary containing the page data, next index,
+            and total number of pages.
         """
         assert isinstance(index, int) and index >= 0
         assert isinstance(page_size, int) and page_size > 0

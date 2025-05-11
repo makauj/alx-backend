@@ -60,7 +60,7 @@ class Server:
             return []
 
         return dataset[start_index:end_index]
-    
+
     def get_hyper(self, page: int, page_size: int) -> Dict:
         """
         get_hyper method:
