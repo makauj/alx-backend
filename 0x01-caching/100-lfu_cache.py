@@ -16,8 +16,8 @@ class LFUCache(BaseCaching):
         """Add an item to the cache"""
         if key and item:
             if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
-                lfu_key = min(self.usage_count, key=lambda k:
-                    self.usage_count[k])
+                lfu_key = min(self.usage_count,
+                              key=lambda k: self.usage_count[k])
                 del self.cache_data[lfu_key]
                 del self.usage_count[lfu_key]
                 print("DISCARD: {}".format(lfu_key))
