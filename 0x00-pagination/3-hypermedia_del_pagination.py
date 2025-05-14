@@ -5,7 +5,7 @@ Deletion-resilient hypermedia pagination
 
 import csv
 import math
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict
 
 
 class Server:
@@ -18,7 +18,8 @@ class Server:
         self.__indexed_dataset = None
 
     def dataset(self) -> List[List]:
-        """Cached dataset
+        """
+        Cached dataset
         """
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
@@ -51,27 +52,24 @@ class Server:
             Dict: A dictionary containing the page data, next index,
             and total number of pages.
         """
-        assert isinstance(index, int) and index >= 0
-        assert isinstance(page_size, int) and page_size > 0
-
-        dataset = self.indexed_dataset()
-        total_data = len(dataset)
-        total_pages = math.ceil(total_data / page_size)
-
-        if index >= total_data:
-            return {
-                "page_size": 0,
-                "data": [],
-                "next_index": None,
-                "total_pages": total_pages
-            }
-
-        next_index = index + page_size
-        data = [dataset[i] for i in range(index, min(next_index, total_data))]
-
-        return {
-            "page_size": len(data),
-            "data": data,
-            "next_index": next_index if next_index < total_data else None,
-            "total_pages": total_pages
+        data = self.indexed_dataset()
+        assert index is not None and index >= 0 and index <= max(data.keys())
+        page_data = []
+        data_count = 0
+        next_index = None
+        start = index if index else 0
+        for i, item in data.items():
+            if i >= start and data_count < page_size:
+                page_data.append(item)
+                data_count += 1
+                continue
+            if data_count == page_size:
+                next_index = i
+                break
+        page_info = {
+            'index': index,
+            'next_index': next_index,
+            'page_size': len(page_data),
+            'data': page_data,
         }
+        return page_info
